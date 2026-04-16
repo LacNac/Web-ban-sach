@@ -81,7 +81,6 @@ header{
        color: black;
        transform: translateY(-5px);
        transition: 0.3s ease-in-out;
-       transition: 0.3 ease-out;
 }
 
 @media (max-width: 1100px) {
@@ -92,3 +91,4 @@ header{
               justify-content: space-around;
        }
 }
+
