@@ -25,6 +25,58 @@
               <a href="../login/index.html">Đăng Kí</a>
        </nav>
 </header>
+       <div class="search-bar">
+        <span class="search-bar-label">Tìm kiếm và lọc</span>
+        <input type="search" placeholder="Tìm kiếm sách..." id="searchInput" autocomplete="off">
+    </div>
+
+    <div class="layout">
+        <aside class="aside-left">
+            <h3>Thể loại</h3>
+            <ul>
+                <li>Thiếu nhi</li>
+                <li>Tiểu thuyết</li>
+                <li>Trinh thám</li>
+                <li>Giả tưởng</li>
+                <li>Văn học Việt Nam</li>
+                <li>Kỹ năng sống</li>
+                <li>Văn học kinh điển</li>
+                
+            </ul>
+        </aside>
+        <main class="product-main">
+            <div class="product-list" id="productList"></div>
+        </main>
+    </div>
+
+    <section class="detail-overlay hidden" id="detailOverlay" aria-hidden="true">
+        <div class="detail-page">
+            <button type="button" class="detail-close" id="detailCloseBtn">← Quay lại</button>
+            <div class="detail-top">
+                <div class="detail-left">
+                    <div class="detail-image-wrap">
+                        <img id="detailImage" src="" alt="Ảnh sách">
+                    </div>
+                    <div class="detail-actions">
+                        <button type="button" class="btn-cart">Thêm vào giỏ hàng</button>
+                        <button type="button" class="btn-buy">Mua</button>
+                    </div>
+                </div>
+                <div class="detail-right">
+                    <div class="detail-info" id="detailInfo"></div>
+                    <div class="detail-summary" id="detailSummary"></div>
+                </div>
+            </div>
+            <h3 class="suggest-title">Gợi ý cho bạn</h3>
+            <div class="suggest-list" id="suggestList"></div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
+
 <body>
        
 </body>
