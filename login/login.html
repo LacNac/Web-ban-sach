@@ -1,0 +1,1776 @@
+<!doctype html>
+<html lang="vi-en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập – Inkognito</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/ico" href="favicon.ico" />
+    <style>
+      :root {
+        --blue: #2c5f8a;
+        --blue-dark: #1e3f5c;
+        --accent: #e8a020;
+        --aside-bg: #eef2f7;
+        --main-bg: #f9fafb;
+        --border: #cdd8e3;
+        --text: #2c3e50;
+        --text-muted: #6b7c93;
+        --radius: 8px;
+        --radius-card: 16px;
+        --red: #e74c3c;
+        --green: #2ecc71;
+        --shadow: 0 10px 40px rgba(44, 95, 138, 0.08);
+        --trans: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--main-bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ─── Toaster ─── */
+      #toaster {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .toast {
+        padding: 14px 20px;
+        border-radius: var(--radius);
+        font-size: 14px;
+        font-weight: 500;
+        color: #fff;
+        min-width: 260px;
+        max-width: 340px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        animation:
+          slideIn 0.3s ease,
+          fadeOut 0.4s ease 2.6s forwards;
+      }
+      .toast.success {
+        background: var(--green);
+      }
+      .toast.error {
+        background: var(--red);
+      }
+      .toast.info {
+        background: var(--blue);
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+      }
+
+      /* ─── Navbar ─── */
+      nav {
+        background: var(--blue-dark);
+        padding: 0 40px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+      }
+      .nav-logo {
+        font-family: "Playfair Display", serif;
+        color: var(--accent);
+        font-size: 22px;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+      }
+      .nav-links a {
+        color: var(--aside-bg);
+        font-size: 14px;
+        text-decoration: none;
+        transition: var(--trans);
+        font-weight: 500;
+      }
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      #nav-auth-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Nút Đăng nhập (outline) */
+      #nav-login-btn {
+        background: transparent;
+        border: 1.5px solid var(--accent);
+        color: var(--accent);
+        padding: 7px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: "DM Sans", sans-serif;
+        transition: var(--trans);
+      }
+      #nav-login-btn:hover {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      /* Nút Đăng ký (filled) */
+      #nav-register-btn {
+        background: var(--accent);
+        border: 1.5px solid var(--accent);
+        color: #fff;
+        padding: 7px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: "DM Sans", sans-serif;
+        transition: var(--trans);
+      }
+      #nav-register-btn:hover {
+        background: #d69018;
+        border-color: #d69018;
+        box-shadow: 0 4px 12px rgba(232, 160, 32, 0.35);
+      }
+
+      #nav-user-info {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        color: var(--aside-bg);
+      }
+      #nav-user-info .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #fff;
+        font-size: 14px;
+      }
+      #nav-user-info .username {
+        font-size: 14px;
+      }
+      #btn-logout {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--aside-bg);
+        padding: 6px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: "DM Sans", sans-serif;
+        transition: var(--trans);
+      }
+      #btn-logout:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      /* ─── Main layout ─── */
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* ─── Floating book decorations ─── */
+      .book-deco {
+        position: absolute;
+        pointer-events: none;
+        user-select: none;
+        animation: floatBook 6s ease-in-out infinite;
+      }
+      .book-deco svg {
+        display: block;
+      }
+
+      .bd-1 {
+        left: 4%;
+        top: 10%;
+        animation-delay: 0s;
+        opacity: 0.55;
+      }
+      .bd-2 {
+        left: 8%;
+        bottom: 12%;
+        animation-delay: 1.2s;
+        opacity: 0.45;
+      }
+      .bd-3 {
+        right: 5%;
+        top: 8%;
+        animation-delay: 0.6s;
+        opacity: 0.5;
+      }
+      .bd-4 {
+        right: 7%;
+        bottom: 10%;
+        animation-delay: 1.8s;
+        opacity: 0.45;
+      }
+      .bd-5 {
+        left: 22%;
+        top: 5%;
+        animation-delay: 0.9s;
+        opacity: 0.3;
+      }
+      .bd-6 {
+        right: 22%;
+        bottom: 5%;
+        animation-delay: 2.1s;
+        opacity: 0.3;
+      }
+
+      @keyframes floatBook {
+        0%,
+        100% {
+          transform: translateY(0) rotate(var(--rot, 0deg));
+        }
+        50% {
+          transform: translateY(-14px) rotate(var(--rot, 0deg));
+        }
+      }
+      .bd-1 {
+        --rot: -8deg;
+      }
+      .bd-2 {
+        --rot: 6deg;
+      }
+      .bd-3 {
+        --rot: 10deg;
+      }
+      .bd-4 {
+        --rot: -5deg;
+      }
+      .bd-5 {
+        --rot: -12deg;
+      }
+      .bd-6 {
+        --rot: 7deg;
+      }
+
+      /* scattered tiny sparkles */
+      .sparkle {
+        position: absolute;
+        pointer-events: none;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        opacity: 0;
+        animation: twinkle 4s ease-in-out infinite;
+      }
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(1.2);
+        }
+      }
+
+      /* ─── Card ─── */
+      .auth-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 460px;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+      .auth-card::before {
+        content: "";
+        display: block;
+        height: 5px;
+        background: linear-gradient(90deg, var(--blue), var(--accent));
+      }
+      .auth-inner {
+        padding: 40px 44px 44px;
+      }
+
+      /* ─── Panel switching ─── */
+      .panel {
+        display: none;
+        animation: panelIn 0.35s ease;
+      }
+      .panel.active {
+        display: block;
+      }
+      @keyframes panelIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ─── Typography ─── */
+      .auth-title {
+        font-family: "Playfair Display", serif;
+        font-size: 26px;
+        color: var(--blue-dark);
+        margin-bottom: 6px;
+      }
+      .auth-subtitle {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 28px;
+        line-height: 1.5;
+      }
+
+      /* ─── Form elements ─── */
+      .form-group {
+        margin-bottom: 18px;
+        position: relative;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue-dark);
+        margin-bottom: 7px;
+      }
+
+      /* ── Expanding input ── */
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 11px 42px 11px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--main-bg);
+        font-size: 15px;
+        font-family: "DM Sans", sans-serif;
+        color: var(--text);
+        outline: none;
+        /* transition for expanding effect */
+        transition:
+          border-color 0.3s ease,
+          background 0.3s ease,
+          box-shadow 0.3s ease,
+          padding 0.25s ease,
+          transform 0.25s ease;
+        transform-origin: left center;
+      }
+      input:focus {
+        border-color: var(--blue);
+        background: #ffffff;
+        box-shadow:
+          0 0 0 4px rgba(44, 95, 138, 0.13),
+          0 2px 12px rgba(44, 95, 138, 0.1);
+        padding-top: 14px;
+        padding-bottom: 14px;
+        transform: scaleX(1.012);
+      }
+      input.error {
+        border-color: var(--red);
+        background: #fdf2f2;
+      }
+
+      .field-icon {
+        position: absolute;
+        right: 14px;
+        top: 38px;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 17px;
+        user-select: none;
+        transition: var(--trans);
+      }
+      .field-icon:hover {
+        color: var(--blue);
+      }
+      .field-error {
+        font-size: 12px;
+        color: var(--red);
+        margin-top: 5px;
+        display: none;
+      }
+      .field-error.show {
+        display: block;
+      }
+
+      /* password strength */
+      #strength-bar-wrap {
+        margin-top: 8px;
+        display: none;
+      }
+      #strength-bar-wrap.show {
+        display: block;
+      }
+      .strength-track {
+        height: 4px;
+        border-radius: 4px;
+        background: var(--border);
+        overflow: hidden;
+      }
+      .strength-fill {
+        height: 100%;
+        border-radius: 4px;
+        width: 0;
+        transition:
+          width 0.4s ease,
+          background 0.4s ease;
+      }
+      .strength-text {
+        font-size: 11px;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+
+      /* row */
+      .row-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .checkbox-label input {
+        width: auto;
+        accent-color: var(--blue);
+        cursor: pointer;
+      }
+      .link-btn {
+        background: none;
+        border: none;
+        color: var(--blue);
+        font-size: 13px;
+        cursor: pointer;
+        font-weight: 500;
+        font-family: "DM Sans", sans-serif;
+      }
+      .link-btn:hover {
+        color: var(--blue-dark);
+        text-decoration: underline;
+      }
+
+      /* submit button */
+      .btn-primary {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 15px;
+        font-weight: 600;
+        font-family: "DM Sans", sans-serif;
+        cursor: pointer;
+        transition: var(--trans);
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(30, 63, 92, 0.35);
+      }
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+      .btn-primary:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-spinner {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        margin: 0 auto;
+      }
+      .btn-primary.loading .btn-text {
+        display: none;
+      }
+      .btn-primary.loading .btn-spinner {
+        display: block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* divider */
+      .divider {
+        text-align: center;
+        margin: 22px 0;
+        position: relative;
+      }
+      .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--border);
+      }
+      .divider span {
+        background: #ffffff;
+        position: relative;
+        padding: 0 12px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .switch-text {
+        text-align: center;
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 24px;
+      }
+      .switch-text button {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .switch-text button:hover {
+        color: #d69018;
+      }
+
+      /* forgot */
+      .back-row {
+        margin-bottom: 20px;
+      }
+      .back-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "DM Sans", sans-serif;
+        transition: var(--trans);
+      }
+      .back-btn:hover {
+        color: var(--blue);
+      }
+
+      /* success */
+      .success-box {
+        text-align: center;
+        padding: 20px 0;
+      }
+      .success-icon {
+        font-size: 52px;
+        margin-bottom: 16px;
+      }
+      .success-box h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        color: var(--blue-dark);
+        margin-bottom: 10px;
+      }
+      .success-box p {
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      /* logged-in */
+      #logged-in-card {
+        display: none;
+        text-align: center;
+        padding: 20px 0;
+      }
+      .user-avatar-big {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--blue), var(--accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 auto 16px;
+      }
+      #logged-in-card h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        color: var(--blue-dark);
+        margin-bottom: 8px;
+      }
+      #logged-in-card p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 28px;
+      }
+      .btn-secondary {
+        width: 100%;
+        padding: 13px;
+        background: transparent;
+        border: 1.5px solid var(--blue);
+        color: var(--blue);
+        border-radius: var(--radius);
+        font-size: 15px;
+        font-weight: 600;
+        font-family: "DM Sans", sans-serif;
+        cursor: pointer;
+        transition: var(--trans);
+        margin-top: 12px;
+      }
+      .btn-secondary:hover {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* lock */
+      .lock-warning {
+        display: none;
+        background: #fdf2f2;
+        border: 1px solid var(--red);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        font-size: 13px;
+        color: var(--red);
+        margin-bottom: 16px;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .lock-warning.show {
+        display: flex;
+      }
+
+      /* ─── Footer ─── */
+      footer {
+        background: var(--blue-dark);
+        color: var(--aside-bg);
+        text-align: center;
+        padding: 18px;
+        font-size: 13px;
+      }
+      footer span {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* ─── Responsive ─── */
+      @media (max-width: 520px) {
+        .auth-inner {
+          padding: 28px 24px 36px;
+        }
+        nav {
+          padding: 0 16px;
+        }
+        .nav-links {
+          display: none;
+        }
+        .bd-1,
+        .bd-2,
+        .bd-3,
+        .bd-4,
+        .bd-5,
+        .bd-6 {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="toaster"></div>
+
+    <nav>
+      <a href="index.html" class="nav-logo">
+        <img src="logo.ico" alt="Logo" width="50px" height="45px" />
+        Inkognito
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="products.html">Sản Phẩm</a>
+        <a href="cart.html">Giỏ hàng</a>
+      </div>
+      <div id="nav-auth-area">
+        <!-- Hai nút riêng biệt -->
+        <button id="nav-login-btn" onclick="showPanel('login')">
+          Đăng nhập
+        </button>
+        <button id="nav-register-btn" onclick="showPanel('register')">
+          Đăng ký
+        </button>
+
+        <div id="nav-user-info">
+          <div class="avatar" id="nav-avatar">U</div>
+          <span class="username" id="nav-username">User</span>
+          <button id="btn-logout" onclick="logout()">Đăng xuất</button>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ── Book decorations ── -->
+
+      <!-- Big book left -->
+      <div class="book-deco bd-1">
+        <svg
+          width="90"
+          height="110"
+          viewBox="0 0 90 110"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="10"
+            y="4"
+            width="68"
+            height="96"
+            rx="4"
+            fill="#2c5f8a"
+            opacity="0.9"
+          />
+          <rect x="6" y="4" width="12" height="96" rx="3" fill="#1e3f5c" />
+          <rect
+            x="20"
+            y="20"
+            width="44"
+            height="4"
+            rx="2"
+            fill="white"
+            opacity="0.4"
+          />
+          <rect
+            x="20"
+            y="30"
+            width="36"
+            height="4"
+            rx="2"
+            fill="white"
+            opacity="0.3"
+          />
+          <rect
+            x="20"
+            y="40"
+            width="40"
+            height="4"
+            rx="2"
+            fill="white"
+            opacity="0.25"
+          />
+          <rect
+            x="20"
+            y="55"
+            width="44"
+            height="14"
+            rx="2"
+            fill="#e8a020"
+            opacity="0.5"
+          />
+        </svg>
+      </div>
+
+      <!-- Small stack bottom-left -->
+      <div class="book-deco bd-2">
+        <svg
+          width="110"
+          height="80"
+          viewBox="0 0 110 80"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- bottom book -->
+          <rect
+            x="0"
+            y="54"
+            width="110"
+            height="18"
+            rx="4"
+            fill="#e8a020"
+            opacity="0.75"
+          />
+          <rect
+            x="0"
+            y="54"
+            width="14"
+            height="18"
+            rx="3"
+            fill="#d69018"
+            opacity="0.9"
+          />
+          <!-- middle book -->
+          <rect
+            x="6"
+            y="34"
+            width="96"
+            height="18"
+            rx="4"
+            fill="#2c5f8a"
+            opacity="0.8"
+          />
+          <rect
+            x="6"
+            y="34"
+            width="12"
+            height="18"
+            rx="3"
+            fill="#1e3f5c"
+            opacity="0.9"
+          />
+          <!-- top book -->
+          <rect
+            x="10"
+            y="14"
+            width="82"
+            height="18"
+            rx="4"
+            fill="#4a80a8"
+            opacity="0.8"
+          />
+          <rect
+            x="10"
+            y="14"
+            width="12"
+            height="18"
+            rx="3"
+            fill="#2c5f8a"
+            opacity="0.9"
+          />
+          <!-- lines -->
+          <rect
+            x="28"
+            y="20"
+            width="40"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.35"
+          />
+          <rect
+            x="24"
+            y="41"
+            width="48"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.3"
+          />
+          <rect
+            x="22"
+            y="61"
+            width="52"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.35"
+          />
+        </svg>
+      </div>
+
+      <!-- Tall book right -->
+      <div class="book-deco bd-3">
+        <svg
+          width="75"
+          height="120"
+          viewBox="0 0 75 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="8"
+            y="2"
+            width="60"
+            height="112"
+            rx="4"
+            fill="#e8a020"
+            opacity="0.85"
+          />
+          <rect x="4" y="2" width="12" height="112" rx="3" fill="#d69018" />
+          <rect
+            x="18"
+            y="22"
+            width="36"
+            height="5"
+            rx="2"
+            fill="white"
+            opacity="0.5"
+          />
+          <rect
+            x="18"
+            y="33"
+            width="28"
+            height="5"
+            rx="2"
+            fill="white"
+            opacity="0.35"
+          />
+          <rect
+            x="18"
+            y="44"
+            width="32"
+            height="5"
+            rx="2"
+            fill="white"
+            opacity="0.3"
+          />
+          <rect
+            x="18"
+            y="62"
+            width="36"
+            height="18"
+            rx="2"
+            fill="#2c5f8a"
+            opacity="0.4"
+          />
+          <circle cx="36" cy="95" r="8" fill="white" opacity="0.2" />
+        </svg>
+      </div>
+
+      <!-- Stack bottom-right -->
+      <div class="book-deco bd-4">
+        <svg
+          width="100"
+          height="85"
+          viewBox="0 0 100 85"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="5"
+            y="60"
+            width="90"
+            height="16"
+            rx="4"
+            fill="#1e3f5c"
+            opacity="0.8"
+          />
+          <rect
+            x="5"
+            y="60"
+            width="12"
+            height="16"
+            rx="3"
+            fill="#0f2236"
+            opacity="0.9"
+          />
+          <rect
+            x="0"
+            y="40"
+            width="100"
+            height="18"
+            rx="4"
+            fill="#4a80a8"
+            opacity="0.75"
+          />
+          <rect
+            x="0"
+            y="40"
+            width="14"
+            height="18"
+            rx="3"
+            fill="#2c5f8a"
+            opacity="0.9"
+          />
+          <rect
+            x="8"
+            y="18"
+            width="80"
+            height="20"
+            rx="4"
+            fill="#e8a020"
+            opacity="0.7"
+          />
+          <rect x="8" y="18" width="12" height="20" rx="3" fill="#d69018" />
+          <rect
+            x="26"
+            y="24"
+            width="42"
+            height="4"
+            rx="2"
+            fill="white"
+            opacity="0.45"
+          />
+          <rect
+            x="20"
+            y="46"
+            width="48"
+            height="4"
+            rx="2"
+            fill="white"
+            opacity="0.35"
+          />
+          <rect
+            x="22"
+            y="66"
+            width="44"
+            height="4"
+            rx="2"
+            fill="white"
+            opacity="0.3"
+          />
+        </svg>
+      </div>
+
+      <!-- Small book top-center-left -->
+      <div class="book-deco bd-5">
+        <svg
+          width="55"
+          height="70"
+          viewBox="0 0 55 70"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="6"
+            y="3"
+            width="44"
+            height="62"
+            rx="4"
+            fill="#4a80a8"
+            opacity="0.7"
+          />
+          <rect x="3" y="3" width="10" height="62" rx="3" fill="#2c5f8a" />
+          <rect
+            x="16"
+            y="16"
+            width="26"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.4"
+          />
+          <rect
+            x="16"
+            y="24"
+            width="20"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.3"
+          />
+          <rect
+            x="16"
+            y="38"
+            width="26"
+            height="10"
+            rx="2"
+            fill="#e8a020"
+            opacity="0.4"
+          />
+        </svg>
+      </div>
+
+      <!-- Small book bottom-center-right -->
+      <div class="book-deco bd-6">
+        <svg
+          width="60"
+          height="50"
+          viewBox="0 0 60 50"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="0"
+            y="28"
+            width="60"
+            height="14"
+            rx="4"
+            fill="#2c5f8a"
+            opacity="0.7"
+          />
+          <rect x="0" y="28" width="10" height="14" rx="3" fill="#1e3f5c" />
+          <rect
+            x="4"
+            y="10"
+            width="52"
+            height="16"
+            rx="4"
+            fill="#e8a020"
+            opacity="0.65"
+          />
+          <rect x="4" y="10" width="10" height="16" rx="3" fill="#d69018" />
+          <rect
+            x="18"
+            y="15"
+            width="28"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.4"
+          />
+          <rect
+            x="14"
+            y="33"
+            width="32"
+            height="3"
+            rx="1.5"
+            fill="white"
+            opacity="0.35"
+          />
+        </svg>
+      </div>
+
+      <!-- Sparkles -->
+      <div
+        class="sparkle"
+        style="left: 15%; top: 30%; animation-delay: 0s"
+      ></div>
+      <div
+        class="sparkle"
+        style="
+          left: 18%;
+          bottom: 35%;
+          animation-delay: 0.8s;
+          width: 4px;
+          height: 4px;
+        "
+      ></div>
+      <div
+        class="sparkle"
+        style="right: 14%; top: 35%; animation-delay: 1.4s"
+      ></div>
+      <div
+        class="sparkle"
+        style="
+          right: 18%;
+          bottom: 40%;
+          animation-delay: 2.2s;
+          width: 5px;
+          height: 5px;
+        "
+      ></div>
+      <div
+        class="sparkle"
+        style="
+          left: 30%;
+          top: 15%;
+          animation-delay: 0.5s;
+          width: 4px;
+          height: 4px;
+          background: #2c5f8a;
+        "
+      ></div>
+      <div
+        class="sparkle"
+        style="
+          right: 28%;
+          top: 20%;
+          animation-delay: 1.7s;
+          width: 5px;
+          height: 5px;
+          background: #2c5f8a;
+        "
+      ></div>
+
+      <!-- Auth card -->
+      <div class="auth-card">
+        <div class="auth-inner">
+          <div id="logged-in-card">
+            <div class="user-avatar-big" id="card-avatar">U</div>
+            <h3>Xin chào, <span id="card-username">Bạn</span>! 👋</h3>
+            <p>
+              Bạn đã đăng nhập thành công.<br />Khám phá kho sách đa dạng của
+              chúng tôi nhé!
+            </p>
+            <a href="products.html" style="text-decoration: none">
+              <button class="btn-primary">
+                <span class="btn-text">Xem Sản Phẩm</span>
+                <div class="btn-spinner"></div>
+              </button>
+            </a>
+            <button class="btn-secondary" onclick="logout()">Đăng xuất</button>
+          </div>
+
+          <!-- LOGIN -->
+          <div class="panel active" id="panel-login">
+            <h2 class="auth-title">Đăng nhập</h2>
+            <p class="auth-subtitle">
+              Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục.
+            </p>
+
+            <div class="lock-warning" id="lock-warning">
+              🔒 Tài khoản bị tạm khoá do nhập sai quá nhiều lần. Vui lòng thử
+              lại sau <strong id="lock-countdown">30</strong>s.
+            </div>
+
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input
+                type="email"
+                id="login-email"
+                placeholder="abc123@gmail.com"
+                autocomplete="email"
+              />
+              <span class="field-error" id="err-login-email"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="login-pass">Mật khẩu</label>
+              <input
+                type="password"
+                id="login-pass"
+                placeholder="Nhập mật khẩu"
+                autocomplete="current-password"
+                onkeydown="if (event.key === 'Enter') doLogin();"
+              />
+              <span class="field-icon" onclick="togglePass('login-pass', this)"
+                >👁</span
+              >
+              <span class="field-error" id="err-login-pass"></span>
+            </div>
+
+            <div class="row-between">
+              <label class="checkbox-label">
+                <input type="checkbox" id="remember-me" /> Ghi nhớ đăng nhập
+              </label>
+              <button class="link-btn" onclick="showPanel('forgot')">
+                Quên mật khẩu?
+              </button>
+            </div>
+
+            <button class="btn-primary" id="btn-login" onclick="doLogin()">
+              <span class="btn-text">Đăng nhập</span>
+              <div class="btn-spinner"></div>
+            </button>
+
+            <div class="divider"><span>hoặc</span></div>
+            <div class="switch-text">
+              Chưa có tài khoản?
+              <button class="link-btn" onclick="showPanel('register')">
+                <strong>Đăng ký ngay</strong>
+              </button>
+            </div>
+          </div>
+
+          <!-- REGISTER -->
+          <div class="panel" id="panel-register">
+            <h2 class="auth-title">Tạo tài khoản</h2>
+            <p class="auth-subtitle">
+              Đăng ký để mua sách và theo dõi đơn hàng của bạn.
+            </p>
+
+            <div class="form-group">
+              <label for="reg-name">Họ và tên</label>
+              <input
+                type="text"
+                id="reg-name"
+                placeholder="Nguyễn Văn A"
+                autocomplete="name"
+              />
+              <span class="field-error" id="err-reg-name"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-email">Email</label>
+              <input
+                type="email"
+                id="reg-email"
+                placeholder="email@example.com"
+                autocomplete="email"
+              />
+              <span class="field-error" id="err-reg-email"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-pass">Mật khẩu</label>
+              <input
+                type="password"
+                id="reg-pass"
+                placeholder="Tối thiểu 6 ký tự"
+                oninput="checkStrength(this.value)"
+                autocomplete="new-password"
+              />
+              <span class="field-icon" onclick="togglePass('reg-pass', this)"
+                >👁</span
+              >
+              <div id="strength-bar-wrap">
+                <div class="strength-track">
+                  <div class="strength-fill" id="strength-fill"></div>
+                </div>
+                <div class="strength-text" id="strength-text"></div>
+              </div>
+              <span class="field-error" id="err-reg-pass"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-pass2">Xác nhận mật khẩu</label>
+              <input
+                type="password"
+                id="reg-pass2"
+                placeholder="Nhập lại mật khẩu"
+                autocomplete="new-password"
+                onkeydown="if (event.key === 'Enter') doRegister();"
+              />
+              <span class="field-icon" onclick="togglePass('reg-pass2', this)"
+                >👁</span
+              >
+              <span class="field-error" id="err-reg-pass2"></span>
+            </div>
+
+            <button
+              class="btn-primary"
+              id="btn-register"
+              onclick="doRegister()"
+            >
+              <span class="btn-text">Đăng ký</span>
+              <div class="btn-spinner"></div>
+            </button>
+
+            <div class="divider"><span>hoặc</span></div>
+            <div class="switch-text">
+              Đã có tài khoản?
+              <button class="link-btn" onclick="showPanel('login')">
+                <strong>Đăng nhập</strong>
+              </button>
+            </div>
+          </div>
+
+          <!-- FORGOT -->
+          <div class="panel" id="panel-forgot">
+            <div class="back-row">
+              <button class="back-btn" onclick="showPanel('login')">
+                ← Quay lại đăng nhập
+              </button>
+            </div>
+            <h2 class="auth-title">Quên mật khẩu?</h2>
+            <p class="auth-subtitle">
+              Nhập email của bạn, chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu.
+            </p>
+
+            <div class="form-group">
+              <label for="forgot-email">Email</label>
+              <input
+                type="email"
+                id="forgot-email"
+                placeholder="email@example.com"
+                onkeydown="if (event.key === 'Enter') doForgot();"
+              />
+              <span class="field-error" id="err-forgot-email"></span>
+            </div>
+
+            <button class="btn-primary" id="btn-forgot" onclick="doForgot()">
+              <span class="btn-text">Gửi yêu cầu</span>
+              <div class="btn-spinner"></div>
+            </button>
+          </div>
+
+          <!-- FORGOT OK -->
+          <div class="panel" id="panel-forgot-ok">
+            <div class="success-box">
+              <div class="success-icon">📧</div>
+              <h3>Đã gửi email!</h3>
+              <p>
+                Chúng tôi đã gửi hướng dẫn đặt lại mật khẩu đến email của
+                bạn.<br />Vui lòng kiểm tra hộp thư (kể cả thư mục Spam).
+              </p>
+            </div>
+            <button
+              class="btn-primary"
+              style="margin-top: 28px"
+              onclick="showPanel('login')"
+            >
+              <span class="btn-text">Quay lại đăng nhập</span>
+              <div class="btn-spinner"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <h3>© Liên hệ:</h3>
+      Địa chỉ: A2-613 Đại học Kinh tế Quốc dân<br />
+      Email: cskh@inkognito.com.vn<br />
+      Số điện thoại: 19001124
+    </footer>
+
+    <script>
+      const USERS_KEY = "bs_users";
+      const SESSION_KEY = "bs_session";
+      const FAIL_KEY = "bs_fail";
+
+      function getUsers() {
+        return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+      }
+      function saveUsers(arr) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(arr));
+      }
+      function getSession() {
+        return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+      }
+      function saveSession(user, remember) {
+        const exp = remember ? Date.now() + 7 * 24 * 3600 * 1000 : null;
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ ...user, exp }));
+      }
+      function clearSession() {
+        localStorage.removeItem(SESSION_KEY);
+      }
+
+      function getFailData() {
+        return JSON.parse(
+          localStorage.getItem(FAIL_KEY) || '{"count":0,"lockedUntil":0}',
+        );
+      }
+      function recordFail() {
+        const d = getFailData();
+        d.count++;
+        if (d.count >= 5) d.lockedUntil = Date.now() + 30000;
+        localStorage.setItem(FAIL_KEY, JSON.stringify(d));
+        return d;
+      }
+      function resetFail() {
+        localStorage.removeItem(FAIL_KEY);
+      }
+      function isLocked() {
+        const d = getFailData();
+        if (d.lockedUntil && Date.now() < d.lockedUntil) return d.lockedUntil;
+        if (d.lockedUntil && Date.now() >= d.lockedUntil) resetFail();
+        return false;
+      }
+
+      function toast(msg, type = "info") {
+        const t = document.createElement("div");
+        t.className = `toast ${type}`;
+        t.textContent = msg;
+        document.getElementById("toaster").appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+      }
+
+      function showPanel(id) {
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+        const el = document.getElementById("panel-" + id);
+        if (el) el.classList.add("active");
+        clearErrors();
+
+        if (id === "login") {
+          document.title = "Đăng nhập – Inkognito";
+        } else if (id === "register") {
+          document.title = "Đăng ký – Inkognito";
+        } else if (id === "forgot" || id === "forgot-ok") {
+          document.title = "Quên mật khẩu – Inkognito";
+        }
+      }
+
+      function togglePass(id, btn) {
+        const inp = document.getElementById(id);
+        if (inp.type === "password") {
+          inp.type = "text";
+          btn.textContent = "🙈";
+        } else {
+          inp.type = "password";
+          btn.textContent = "👁";
+        }
+      }
+
+      function setErr(id, msg) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add("show");
+        const inp =
+          el.previousElementSibling?.tagName === "INPUT"
+            ? el.previousElementSibling
+            : el.parentElement.querySelector("input");
+        if (inp) inp.classList.add("error");
+      }
+      function clearErrors() {
+        document.querySelectorAll(".field-error").forEach((e) => {
+          e.classList.remove("show");
+          e.textContent = "";
+        });
+        document
+          .querySelectorAll("input")
+          .forEach((i) => i.classList.remove("error"));
+        document.getElementById("lock-warning").classList.remove("show");
+      }
+      function isValidEmail(e) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+      }
+
+      function checkStrength(val) {
+        const wrap = document.getElementById("strength-bar-wrap");
+        const fill = document.getElementById("strength-fill");
+        const text = document.getElementById("strength-text");
+        if (!val) {
+          wrap.classList.remove("show");
+          return;
+        }
+        wrap.classList.add("show");
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+        const levels = [
+          { label: "Rất yếu", color: "#e74c3c", w: "20%" },
+          { label: "Yếu", color: "#e67e22", w: "40%" },
+          { label: "Trung bình", color: "#f1c40f", w: "60%" },
+          { label: "Mạnh", color: "#2ecc71", w: "80%" },
+          { label: "Rất mạnh", color: "#27ae60", w: "100%" },
+        ];
+        const l = levels[Math.min(score, 4)];
+        fill.style.width = l.w;
+        fill.style.background = l.color;
+        text.textContent = l.label;
+        text.style.color = l.color;
+      }
+
+      function setLoading(btnId, on) {
+        const btn = document.getElementById(btnId);
+        if (on) {
+          btn.classList.add("loading");
+          btn.disabled = true;
+        } else {
+          btn.classList.remove("loading");
+          btn.disabled = false;
+        }
+      }
+
+      function updateNavbar() {
+        const sess = getSession();
+        const loginBtn = document.getElementById("nav-login-btn");
+        const registerBtn = document.getElementById("nav-register-btn");
+        const userInfo = document.getElementById("nav-user-info");
+        const loggedDiv = document.getElementById("logged-in-card");
+
+        if (sess && (!sess.exp || Date.now() < sess.exp)) {
+          loginBtn.style.display = "none";
+          registerBtn.style.display = "none";
+          userInfo.style.display = "flex";
+          document.getElementById("nav-avatar").textContent =
+            sess.name[0].toUpperCase();
+          document.getElementById("nav-username").textContent = sess.name
+            .split(" ")
+            .pop();
+          loggedDiv.style.display = "block";
+          document.getElementById("card-avatar").textContent =
+            sess.name[0].toUpperCase();
+          document.getElementById("card-username").textContent = sess.name;
+          document
+            .querySelectorAll(".panel")
+            .forEach((p) => p.classList.remove("active"));
+        } else {
+          loginBtn.style.display = "";
+          registerBtn.style.display = "";
+          userInfo.style.display = "none";
+          loggedDiv.style.display = "none";
+          clearSession();
+          if (!document.querySelector(".panel.active")) showPanel("login");
+        }
+      }
+
+      function doLogin() {
+        clearErrors();
+        const email = document.getElementById("login-email").value.trim();
+        const pass = document.getElementById("login-pass").value;
+        const remember = document.getElementById("remember-me").checked;
+        let ok = true;
+        if (!email) {
+          setErr("err-login-email", "Vui lòng nhập email.");
+          ok = false;
+        } else if (!isValidEmail(email)) {
+          setErr("err-login-email", "Email không hợp lệ.");
+          ok = false;
+        }
+        if (!pass) {
+          setErr("err-login-pass", "Vui lòng nhập mật khẩu.");
+          ok = false;
+        }
+        if (!ok) return;
+        const lockedUntil = isLocked();
+        if (lockedUntil) {
+          showLockCountdown(lockedUntil);
+          return;
+        }
+        setLoading("btn-login", true);
+        setTimeout(() => {
+          setLoading("btn-login", false);
+          const users = getUsers();
+          const user = users.find(
+            (u) => u.email === email && u.password === pass,
+          );
+          if (!user) {
+            const d = recordFail();
+            const remaining = 5 - d.count;
+            if (d.lockedUntil) {
+              showLockCountdown(d.lockedUntil);
+              toast(
+                "Tài khoản bị khoá 30 giây do nhập sai quá nhiều lần.",
+                "error",
+              );
+            } else {
+              setErr(
+                "err-login-pass",
+                `Email hoặc mật khẩu không đúng. Còn ${remaining} lần thử.`,
+              );
+              toast("Thông tin đăng nhập không chính xác!", "error");
+            }
+            return;
+          }
+          resetFail();
+          saveSession(user, remember);
+          toast(`Chào mừng, ${user.name}! 🎉`, "success");
+          setTimeout(updateNavbar, 400);
+        }, 900);
+      }
+
+      function showLockCountdown(until) {
+        const warning = document.getElementById("lock-warning");
+        warning.classList.add("show");
+        const tick = () => {
+          const left = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+          document.getElementById("lock-countdown").textContent = left;
+          if (left > 0) setTimeout(tick, 1000);
+          else {
+            warning.classList.remove("show");
+            resetFail();
+          }
+        };
+        tick();
+      }
+
+      function doRegister() {
+        clearErrors();
+        const name = document.getElementById("reg-name").value.trim();
+        const email = document.getElementById("reg-email").value.trim();
+        const pass = document.getElementById("reg-pass").value;
+        const pass2 = document.getElementById("reg-pass2").value;
+        let ok = true;
+        if (!name) {
+          setErr("err-reg-name", "Vui lòng nhập họ tên.");
+          ok = false;
+        }
+        if (!email) {
+          setErr("err-reg-email", "Vui lòng nhập email.");
+          ok = false;
+        } else if (!isValidEmail(email)) {
+          setErr("err-reg-email", "Email không hợp lệ.");
+          ok = false;
+        }
+        if (!pass) {
+          setErr("err-reg-pass", "Vui lòng nhập mật khẩu.");
+          ok = false;
+        } else if (pass.length < 6) {
+          setErr("err-reg-pass", "Mật khẩu tối thiểu 6 ký tự.");
+          ok = false;
+        }
+        if (!pass2) {
+          setErr("err-reg-pass2", "Vui lòng xác nhận mật khẩu.");
+          ok = false;
+        } else if (pass !== pass2) {
+          setErr("err-reg-pass2", "Mật khẩu xác nhận không khớp.");
+          ok = false;
+        }
+        if (!ok) return;
+        const users = getUsers();
+        if (users.find((u) => u.email === email)) {
+          setErr("err-reg-email", "Email này đã được đăng ký.");
+          return;
+        }
+        setLoading("btn-register", true);
+        setTimeout(() => {
+          setLoading("btn-register", false);
+          const newUser = { id: Date.now(), name, email, password: pass };
+          users.push(newUser);
+          saveUsers(users);
+          saveSession(newUser, false);
+          toast(`Đăng ký thành công! Chào ${name} 🎉`, "success");
+          setTimeout(updateNavbar, 400);
+        }, 900);
+      }
+
+      function doForgot() {
+        clearErrors();
+        const email = document.getElementById("forgot-email").value.trim();
+        if (!email) {
+          setErr("err-forgot-email", "Vui lòng nhập email.");
+          return;
+        }
+        if (!isValidEmail(email)) {
+          setErr("err-forgot-email", "Email không hợp lệ.");
+          return;
+        }
+        setLoading("btn-forgot", true);
+        setTimeout(() => {
+          setLoading("btn-forgot", false);
+          showPanel("forgot-ok");
+          toast("Đã gửi email đặt lại mật khẩu.", "info");
+        }, 1000);
+      }
+
+      function logout() {
+        clearSession();
+        toast("Đã đăng xuất thành công.", "info");
+        setTimeout(() => {
+          updateNavbar();
+          showPanel("login");
+        }, 300);
+      }
+
+      document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
+  </body>
+</html>
