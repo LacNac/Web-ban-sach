@@ -67,7 +67,7 @@ header{
 #login{
        display: flex ;
        align-items: center;
-       gap: 5px;
+       gap: 10px;
        color: #70665b;
        margin: 30px;
 }

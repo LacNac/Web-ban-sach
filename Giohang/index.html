@@ -4,7 +4,8 @@
        <meta charset="UTF-8">
        <meta name="viewport" content="width=device-width, initial-scale=1.0">
        <link rel="icon" href="../img/favicon.ico" type="image/x-icon" border-radius="50%"> 
-       <link rel="stylesheet" href="style.css">    
+       <link rel="stylesheet" href="style.css">
+       <link rel="stylesheet" href="table.css">       
  
        <title>Giỏ Hàng</title>
 </head>
@@ -26,5 +27,42 @@
        </nav>
 </header>
 <body>
+       <table>
+              <thead>
+                     <tr>
+                            <th>STT</th>
+                            <th class="ten">Tên sách</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Trạng thái</th>
+                     </tr>
+              </thead>
+              <tbody>
+                                   <tr>
+                     <td>1</td>
+                     <td class="ten">Tên</td>
+                     <td>1</td>
+                     <td>1000</td>
+                     <td>
+                            <label class="checkbox-container">
+                                   <input type="checkbox">
+                                   <span class="checkmark"></span>
+                            </label>
+                     </td>
+                     
+              </tr>
+              </tbody>
+
+
+              <tfoot>
+                     <tr>
+                            <td colspan="3">Tổng tiền: </td>
+                            <td colspan="2">.....</td>
+
+                     </tr>
+              </tfoot>
+              
+       </table>
+
 </body>
 </html>
