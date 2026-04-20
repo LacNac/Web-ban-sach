@@ -45,6 +45,7 @@ header{
        color: white;
 }
 #nav-header > a{
+       display : flex;
        text-decoration: none;
        width: 150px;
        height: 70px;
