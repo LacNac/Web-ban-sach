@@ -1,12 +1,9 @@
 body{
-
        margin: 0;
        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
        background-color: rgb(242, 239, 221);
        font-size: 16px;
        min-height: 100vh;
-       display: flex;
-       flex-direction: column;
 }
 
 header{
@@ -20,7 +17,7 @@ header{
        border-radius: 20px ;
        flex-wrap: wrap;
        position: sticky;
-       z-index: 1000;
+       z-index: 500;
 }
 #icon-header{
        color: #eec691;
