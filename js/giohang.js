@@ -1,10 +1,11 @@
+
 let list = [
     { Tensach: "Nà ná na na", soluong: 1, gia: 1000 },
     { Tensach: "A Chị Mèo", soluong: 2, gia: 12000 }
 ];
 
 let ctlist = [
-       {anh: "../img/adomixi.jpg", tacgia: "toptop", date: "30/2/2026", tomtat: "Nhạc ấn độ cực hay", ten: "Nà ná na na"}
+       {anh: "../img/adomixi.jpg", tacgia: "hơm biec, hơm nhớ", date: "30/2/2026", tomtat: "Nhạc ấn độ cực hay", ten: "Nà ná na na"}
 ]
 
 let tbody = document.getElementById("list");
@@ -14,9 +15,10 @@ function render() {
     for (let i = 0; i < list.length; i++) {
         tbody.innerHTML += `
             <tr class="listsach">
-                <td>${item.Tensach}</td>
-                <td>${item.soluong}</td>
-                <td>${item.gia}</td>
+                <td>${i+1}</td>
+                <td>${list[i].Tensach}</td>
+                <td>${list[i].soluong}</td>
+                <td>${list[i].gia}</td>
                 <td>
                     <label class="checkbox-container">
                         <input type="checkbox">
@@ -25,7 +27,8 @@ function render() {
                 </td>
             </tr>`
             for(let j = 0; j < ctlist.length; j++){
-                if(ctlist[j].ten == list[i].Tensach){
+                if(ctlist[j].ten === list[i].Tensach){
+                    tbody.innerHTML += 
                 `<tr class="detail">
                     <td colspan="4">
                         <div class="info">
@@ -45,14 +48,18 @@ function render() {
 
 render();
 
-let rows = document.querySelectorAll(".listsach");
+function attachEvents() {
+    let rows = document.querySelectorAll(".listsach");
 
-rows.forEach(row => {
-    row.addEventListener("click", () => {
-        let detail = row.parentElement.querySelector(".detail");
+    rows.forEach(row => {
+        row.addEventListener("click", () => {
+            let next = row.nextElementSibling;
 
-        if (detail) {
-            detail.classList.toggle("active");
-        }
+            if (next && next.classList.contains("detail")) {
+                next.classList.toggle("active");
+            }
+        });
     });
-});
+}
+
+attachEvents();
