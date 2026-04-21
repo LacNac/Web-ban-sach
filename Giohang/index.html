@@ -11,7 +11,7 @@
 </head>
 
 <body>
-       
+      
        <header>
               <div id="icon-header" class="header-inline">
                      <img src="../img/logo.ico" alt="Logo" width="100px">
@@ -29,30 +29,68 @@
                      <a href="../login/login.html">Đăng Kí</a>
               </nav>
        </header>
-       <table>
-              <thead>
-                     <tr>
-                            <th>STT</th>
-                            <th class="ten">Tên sách</th>
-                            <th>Số lượng</th>
-                            <th>Giá</th>
-                            <th>Chọn</th>
-                     </tr>
-              </thead>
-              <tbody id="list">
 
-              </tbody>
+       
+       <div class="layout">
+       <div class="banner-left">
+              <img src="../img/mylove.jpg" alt="anhiu1" class="move-img">
+              <img src="../img/mylove1.jpg" alt="anhiu2" class="move-img">
+              <img src="../img/mlove2.jpg" alt="anhiu3" class="move-img">
+       </div>
+       <div class="table-area">
+              <div class="button-gr">
+                     <div id="button-mua">Mua</div>
+                     <div id="button-xoa">Xóa</div>
+              </div>
+              <div class="table-scroll">
+              <table>
+                     <thead>
+                            <tr>
+                                   <th>STT</th>
+                                   <th class="ten">Tên sách</th>
+                                   <th>Số lượng</th>
+                                   <th>Giá</th>
+                                   <th>Chọn</th>
+                            </tr>
+                     </thead>
+                     <tbody id="list">
 
-              <tfoot>
-                     <tr>
-                            <td colspan="3">Tổng tiền: </td>
-                            <td colspan="2">.....</td>
+                     </tbody>
 
-                     </tr>
-              </tfoot>
-              
-       </table>
-       <script src="../js/giohang.js"></script>
+                     <tfoot>
+                            <tr>
+                                   <td colspan="3">Tổng tiền: </td>
+                                   <td colspan="2" id="total"></td>
 
+                            </tr>
+                     </tfoot>
+                     
+              </table>
+              </div>
+       </div>
+       
+       <div class="banner-right">
+              <img src="../img/anhiu1.jpg" alt="" class="move-img">
+              <img src="../img/anhiu2.jpg" alt="" class="move-img">
+              <img src="../img/anhiu3.jpg" alt="" class="move-img">
+       </div>
+       </div>
+
+       <div id="qr-modal" class="hidden">
+              <div class="qr-box">
+                     <h3>Thanh toán</h3>
+                     <div class="qr-img">
+                            <img src="../img/anhgif.gif" alt="" width = "400px">
+                            <img src="../img/qr.jpg" alt="QR thanh toán" width="400px">
+
+                     </div>
+                     <p id="qr-money"></p>
+                     <button id="close-qr">Đóng</button>
+              </div>
+       </div>
+   
 </body>
+
+    <script src="../js/giohang.js"></script>
+
 </html>
