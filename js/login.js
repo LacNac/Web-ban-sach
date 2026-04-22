@@ -88,6 +88,7 @@ function setErr(id, msg) {
       : el.parentElement.querySelector("input");
   if (inp) inp.classList.add("error");
 }
+
 function clearErrors() {
   document.querySelectorAll(".field-error").forEach((e) => {
     e.classList.remove("show");
@@ -98,37 +99,9 @@ function clearErrors() {
     .forEach((i) => i.classList.remove("error"));
   document.getElementById("lock-warning").classList.remove("show");
 }
+
 function isValidEmail(e) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-}
-
-function checkStrength(val) {
-  const wrap = document.getElementById("strength-bar-wrap");
-  const fill = document.getElementById("strength-fill");
-  const text = document.getElementById("strength-text");
-  if (!val) {
-    wrap.classList.remove("show");
-    return;
-  }
-  wrap.classList.add("show");
-  let score = 0;
-  if (val.length >= 6) score++;
-  if (val.length >= 10) score++;
-  if (/[A-Z]/.test(val)) score++;
-  if (/[0-9]/.test(val)) score++;
-  if (/[^A-Za-z0-9]/.test(val)) score++;
-  const levels = [
-    { label: "Rất yếu", color: "#e74c3c", w: "20%" },
-    { label: "Yếu", color: "#e67e22", w: "40%" },
-    { label: "Trung bình", color: "#f1c40f", w: "60%" },
-    { label: "Mạnh", color: "#2ecc71", w: "80%" },
-    { label: "Rất mạnh", color: "#27ae60", w: "100%" },
-  ];
-  const l = levels[Math.min(score, 4)];
-  fill.style.width = l.w;
-  fill.style.background = l.color;
-  text.textContent = l.label;
-  text.style.color = l.color;
 }
 
 function setLoading(btnId, on) {
@@ -171,7 +144,17 @@ function updateNavbar() {
     userInfo.style.display = "none";
     loggedDiv.style.display = "none";
     clearSession();
-    if (!document.querySelector(".panel.active")) showPanel("login");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get("action");
+
+    if (action === "register") {
+      showPanel("register");
+    } else if (action === "forgot") {
+      showPanel("forgot");
+    } else {
+      showPanel("login");
+    }
   }
 }
 
