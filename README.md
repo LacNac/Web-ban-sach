@@ -1,5 +1,5 @@
 Đây là wed bán sách hihihi
-Cách để chạy wed
-- Vào folder home sau đó chạy file home html
+<br> Cách để chạy wed
+- hãy vào file index.html để chạy
 
 
