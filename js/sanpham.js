@@ -220,7 +220,7 @@ function renderSuggestions(currentBook) {
     card.innerHTML = `
       <img src="${book.image}" alt="${book.title}">
       <h4>${book.title}</h4>
-      <div class="card-actions">
+      <div class="card-actions" data-id = "${book.id}">
         <button type="button" class="btn-cart">Thêm vào giỏ hàng</button>
         <button type="button" class="btn-buy">Mua</button>
       </div>
@@ -264,6 +264,8 @@ searchInput.addEventListener("input", () => {
 });
 
 productList.addEventListener("click", (event) => {
+
+  //khi thêm giỏ hàng thì sẽ lưu vào trình duyệt
     const buyBtn = event.target.closest(".btn-buy");
   if (buyBtn) {
     const card = buyBtn.closest(".card");
@@ -294,7 +296,7 @@ productList.addEventListener("click", (event) => {
     localStorage.setItem("cart", JSON.stringify(list));
 
     alert("Đã thêm vào giỏ hàng");
-    return; // ⚠️ chặn không chạy tiếp
+    return; 
   }
 
   const detailBtn = event.target.closest(".btn-title");
