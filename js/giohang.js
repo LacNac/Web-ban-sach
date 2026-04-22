@@ -1,5 +1,5 @@
 let list = [
-    { id: 1, Tensach: "Nà ná na na", soluong: 1, gia: 1000, anh: "../img/adomixi.jpg", tacgia: "hơm biec, hơm nhớ", date: "30/2/2026", tomtat: "Nhạc ấn độ cực hay" },
+    { id: 1, Tensach: "Nà ná na na", soluong: 1, gia: 1000, anh: "../img/adomixi.jpg", tacgia: "Tiktok-sensei", date: "30/2/2026", tomtat: "Nhạc ấn độ cực hay" },
     { id: 2, Tensach: "Harry Potter and the Sorcerer's Stone", soluong: 1, gia: 120000, anh: "../img/harry1.jpg", tacgia: "J.K. Rowling", date: "26/06/1997", tomtat: "Câu chuyện về cậu bé phù thủy Harry Potter" },
     { id: 3, Tensach: "The Alchemist", soluong: 2, gia: 90000, anh: "../img/alchemist.jpg", tacgia: "Paulo Coelho", date: "1988", tomtat: "Hành trình theo đuổi ước mơ và số phận" },
     { id: 4, Tensach: "To Kill a Mockingbird", soluong: 1, gia: 110000, anh: "../img/mockingbird.jpg", tacgia: "Harper Lee", date: "1960", tomtat: "Câu chuyện về công lý và phân biệt chủng tộc" },
@@ -99,6 +99,10 @@ function tinhTongTien() {
 
 
 xoaBtn.addEventListener("click", function () {
+    if (chon.length === 0) {
+        alert("Vui lòng chọn sản phẩm muốn xóa");
+        return;
+    }
     list = list.filter(item => !chon.includes(item.id));
 
     chon = [];
@@ -123,15 +127,13 @@ btnMua.addEventListener("click", function () {
     tinhTongTien();
 
     qrMoney.innerText = "Số tiền: " + total + " VND";
-
     modal.classList.remove("hidden");
 });
-document.addEventListener("DOMContentLoaded", function () {
-    const closeQR = document.getElementById("close-qr");
 
-    closeQR.addEventListener("click", function () {
-        document.getElementById("qr-modal").classList.add("hidden");
-    });
+closeQR.addEventListener("click", function () {
+    modal.classList.add("hidden");
+    list = list.filter(item => !chon.includes(item.id));
+    chon = [];
+    total = 0;
+    render()
 });
-
-console.log(closeQR)
