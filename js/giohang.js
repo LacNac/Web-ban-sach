@@ -1,11 +1,4 @@
-let list = [
-    { id: 1, Tensach: "Nà ná na na", soluong: 1, gia: 1000, anh: "../img/adomixi.jpg", tacgia: "Tiktok-sensei", date: "30/2/2026", tomtat: "Nhạc ấn độ cực hay" },
-    { id: 2, Tensach: "Harry Potter and the Sorcerer's Stone", soluong: 1, gia: 120000, anh: "../img/harry1.jpg", tacgia: "J.K. Rowling", date: "26/06/1997", tomtat: "Câu chuyện về cậu bé phù thủy Harry Potter" },
-    { id: 3, Tensach: "The Alchemist", soluong: 2, gia: 90000, anh: "../img/alchemist.jpg", tacgia: "Paulo Coelho", date: "1988", tomtat: "Hành trình theo đuổi ước mơ và số phận" },
-    { id: 4, Tensach: "To Kill a Mockingbird", soluong: 1, gia: 110000, anh: "../img/mockingbird.jpg", tacgia: "Harper Lee", date: "1960", tomtat: "Câu chuyện về công lý và phân biệt chủng tộc" },
-    { id: 5, Tensach: "The Great Gatsby", soluong: 3, gia: 100000, anh: "../img/gatsby.jpg", tacgia: "F. Scott Fitzgerald", date: "1925", tomtat: "Giấc mơ Mỹ và sự suy tàn của nó" },
-    { id: 6, Tensach: "1984", soluong: 1, gia: 95000, anh: "../img/1984.jpg", tacgia: "George Orwell", date: "1949", tomtat: "Xã hội toàn trị và giám sát con người" }
-];
+let list = JSON.parse(localStorage.getItem("cart")) || [];
 
 let tbody = document.getElementById("list");
 let showtotal = document.getElementById("total");
@@ -104,9 +97,10 @@ xoaBtn.addEventListener("click", function () {
         return;
     }
     list = list.filter(item => !chon.includes(item.id));
-
+    localStorage.setItem("cart", JSON.stringify(list))
     chon = [];
     total = 0;
+    showtotal.innerText = 0;
 
     render();
 });
@@ -133,7 +127,11 @@ btnMua.addEventListener("click", function () {
 closeQR.addEventListener("click", function () {
     modal.classList.add("hidden");
     list = list.filter(item => !chon.includes(item.id));
+
+    localStorage.setItem("cart", JSON.stringify(list));
+
     chon = [];
     total = 0;
+    showtotal.innerText = 0; 
     render()
 });

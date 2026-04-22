@@ -173,7 +173,7 @@ function renderBooks(searchText = "") {
 
   filteredBooks.forEach((book) => {
     const card = `
-      <div class="card">
+      <div class="card" data-id="${book.id}">
         <div class="card-inner">
           <div class="card-front">
             <div class="card-img-wrap">
@@ -264,6 +264,39 @@ searchInput.addEventListener("input", () => {
 });
 
 productList.addEventListener("click", (event) => {
+    const buyBtn = event.target.closest(".btn-buy");
+  if (buyBtn) {
+    const card = buyBtn.closest(".card");
+    const id = Number(card.dataset.id);
+
+    const book = books.find(b => b.id === id);
+    if (!book) return;
+
+    let list = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const exist = list.find(item => item.id === id);
+
+    if (exist) {
+      exist.soluong += 1;
+    } else {
+      list.push({
+        id: book.id,
+        Tensach: book.title,
+        soluong: 1,
+        gia: parseInt(book.price.replace(/\D/g, "")),
+        anh: book.image,
+        tacgia: book.author,
+        date: book.year,
+        tomtat: book.summary
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(list));
+
+    alert("Đã thêm vào giỏ hàng");
+    return; // ⚠️ chặn không chạy tiếp
+  }
+
   const detailBtn = event.target.closest(".btn-title");
   if (!detailBtn) return;
 
