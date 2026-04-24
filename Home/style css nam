@@ -111,14 +111,14 @@ header{
     font-size: 18px;
 }
 
-.marquee{
+.chuchay{
     background: #eec691;
     margin: 10px;
     border-radius: 20px;
     overflow: hidden;
 }
 
-.marquee-content{
+.chuchay-content{
     padding: 10px;
     animation: chạy 10s linear infinite;
     font-weight: bold;
